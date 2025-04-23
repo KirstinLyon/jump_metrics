@@ -1,0 +1,64 @@
+---
+title: "Kickout"
+output:
+  flexdashboard::flex_dashboard:
+    theme: yeti
+runtime: shiny
+---
+
+# Welcome to Kickout!
+
+## Column {data-width="400"}
+
+**Welcome to the Trampoline Event Data Analysis App!**
+
+This app provides insights into individual and synchronized trampoline events, focusing on Københavns Trampoline Club. We use cleaned data from SportTech.io, updated every Monday, to analyze performance trends and compare with other participating clubs. Dive in to explore the latest results and trends!
+
+## Column {data-width="600"}
+
+# Data
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(DT)
+library(lubridate)
+
+
+start_data <- read_csv("../Dataout/all_events.csv") |> 
+  select(date, title, discipline, competition, name, country, club, stage, routine_number,
+         mark_total, mark, number_elements, execution, T, D, H) |> 
+  mutate(year = lubridate::year(date))
+  
+compact_data <- start_data |> 
+  select(-c(year))
+
+updateData <- reactive(
+  compact_data)
+```
+
+## Column
+
+### Event Title - Date
+
+```{r}
+renderDT(
+  updateData(), rownames = F, extensions = 'Buttons', filter="top", editable=T,
+  options = list(
+    dom = 'Blfrtip',
+    buttons = c('csv', 'excel', 'pdf', 'print'),
+    lengthMenu = list(c(10,50,100,-1),c(10,50,100,"All"))
+  )
+)
+```
+
+# Kickout - Trends
+
+## Column {.sidebar}
+
+```{r}
+selectInput('year', 'year', start_data$year)
+selectInput('title', 'title', start_data$title)
+selectInput('country', 'country', start_data$country)
+selectInput('club', 'club', start_data$club)
+
+```
