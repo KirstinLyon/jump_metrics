@@ -12,7 +12,7 @@ library(stringr)
 
 # GLOBAL VARIABLES -------------------------------------------------
 
-START_YEAR <- 2023
+START_YEAR <- 2025
 
 # Define each pattern on a new line for readability
 EVENTS <- c("DanCup", "Scandinavian Open", "Forbunds", "DM Senior",
@@ -38,7 +38,7 @@ event_list <- kickout::fetch_past_event_list() |>
 
 # create dataset for given IDs and rename columns
 
-events <- purrr::map(event_list$event_id, ~ fetch_event_url(.x, event_list)) |>
+events <- purrr::map(event_list$event_id, ~ kickout::fetch_event_url(.x, event_list)) |>
     bind_rows()|> 
     dplyr::rename(Event = title,
                   Competitor = name,
@@ -51,5 +51,15 @@ events <- purrr::map(event_list$event_id, ~ fetch_event_url(.x, event_list)) |>
                   'Routine Number' = routine_number,
                   Stage = stage,
                   Competition = competition,
-                  Discipline = discipline
-    )
+                  Discipline = discipline,
+                  '# Elements' = number_elements,
+                  Rank = rank
+    ) |> 
+    select(event_uuid, Date, Event,   Discipline, Competition, Competitor, Club, Country, Stage, 
+           'Routine Number', Rank, Total, Mark, '# Elements', Execution, T, H, D, everything()) 
+
+
+
+
+
+

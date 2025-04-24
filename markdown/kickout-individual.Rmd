@@ -6,32 +6,20 @@ output:
 runtime: shiny
 ---
 
-# Welcome to Kickout!
-
-## Column {data-width="400"}
-
-**Welcome to the Trampoline Event Data Analysis App!**
-
-This app provides insights into individual and synchronized trampoline events, focusing on Københavns Trampoline Club. We use cleaned data from SportTech.io, updated every Monday, to analyze performance trends and compare with other participating clubs. Dive in to explore the latest results and trends!
-
-## Column {data-width="600"}
-
 # Data
 
 ```{r setup, include=FALSE}
 library(DT)
-library(lubridate)
 library(kickout)
 library(dplyr)
 library(stringr)
-library(readr)
+
 
 source("../Scripts/fetch_data.R")
 
 start_data <- events |> 
-  select(date, title, discipline, competition, name, country, club, stage, routine_number,
-         mark_total, mark, number_elements, execution, T, D, H) |> 
-  mutate(year = lubridate::year(date))
+  select(Date, Event, Discipline, Competition, Competitor, Country, Club, Stage, 'Routine Number',
+         Rank, Total, Mark, '# Elements', Execution, T, D, H)
   
 compact_data <- start_data |> 
   select(-c(year))
@@ -54,4 +42,3 @@ renderDT(
   )
 )
 ```
-
