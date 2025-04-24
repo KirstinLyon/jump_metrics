@@ -1,0 +1,44 @@
+---
+title: "Kickout"
+output:
+  flexdashboard::flex_dashboard:
+    theme: yeti
+runtime: shiny
+---
+
+# Data
+
+```{r setup, include=FALSE}
+library(DT)
+library(kickout)
+library(dplyr)
+library(stringr)
+
+
+source("../Scripts/fetch_data.R")
+
+start_data <- events |> 
+  select(Date, Event, Discipline, Competition, Competitor, Country, Club, Stage, 'Routine Number',
+         Rank, Total, Mark, '# Elements', Execution, T, D, H)
+  
+compact_data <- start_data |> 
+  select(-c(year))
+
+update_raw_data <- reactive(
+  compact_data)
+```
+
+## Column
+
+### All Events
+
+```{r}
+renderDT(
+  update_raw_data(), rownames = F, extensions = 'Buttons', filter="top", editable=T,
+  options = list(
+    dom = 'Blfrtip',
+    buttons = c('csv', 'excel', 'pdf', 'print'),
+    lengthMenu = list(c(10,50,100,-1),c(10,50,100,"All"))
+  )
+)
+```

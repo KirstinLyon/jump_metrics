@@ -1,0 +1,38 @@
+/* Existing styles */
+.narrow-column {
+  width: 300px;
+  text-align: left;
+  float: left;
+  margin-right: 20px;
+}
+
+.picture-space {
+  overflow: hidden; /* Ensure the picture space doesn't overflow */
+}
+
+/* Style for Header 1 background color */
+h1 {
+  background-color: #4CAF50; /* Change to your desired background color */
+  color: white; /* Change to your desired text color */
+  padding: 10px; /* Optional: Add padding to the header */
+  border-radius: 5px; /* Optional: Add rounded corners */
+}
+
+/* Style for active tab in custom nav tabs */
+.nav-tabs-custom > .nav-tabs > li.active {
+  border-top-color: rgba(44, 0, 255, 0.7);
+}
+
+/* New styles for the navigation bar */
+.navbar {
+  background-color: #4CAF50; /* Change to your desired background color */
+}
+
+.navbar .navbar-brand,
+.navbar .navbar-nav > li > a {
+  color: white; /* Change to your desired text color */
+}
+
+.navbar .navbar-nav > li > a:hover {
+  background-color: #45a049; /* Change to your desired hover background color */
+}
