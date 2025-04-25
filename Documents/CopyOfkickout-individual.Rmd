@@ -25,12 +25,12 @@ library(lubridate)
 
 
 start_data <- read_csv("../Dataout/all_events.csv") |> 
-  select(date, title, discipline, competition, name, country, club, stage, routine_number,
-         mark_total, mark, number_elements, execution, T, D, H) |> 
-  mutate(year = lubridate::year(date))
+  select(Date, Event, Discipline, Competition, Competitor, Country, Club, Stage, 'Routine Number',
+         Rank, Total, Mark, '# Elements', Execution, T, D, H) #|> 
+#  mutate(year = lubridate::year(date))
   
-compact_data <- start_data |> 
-  select(-c(year))
+compact_data <- start_data #|> 
+#  select(-c(year))
 
 updateData <- reactive(
   compact_data)
@@ -56,9 +56,9 @@ renderDT(
 ## Column {.sidebar}
 
 ```{r}
-selectInput('year', 'year', start_data$year)
-selectInput('title', 'title', start_data$title)
-selectInput('country', 'country', start_data$country)
-selectInput('club', 'club', start_data$club)
+#selectInput('year', 'year', start_data$year)
+#selectInput('title', 'title', start_data$title)
+#selectInput('country', 'country', start_data$country)
+#selectInput('club', 'club', start_data$club)
 
 ```
