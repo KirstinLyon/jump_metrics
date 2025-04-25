@@ -59,16 +59,17 @@ events <- purrr::map(event_list$event_id, ~ kickout::fetch_event_url(.x, event_l
                   Rank = rank
     ) |> 
     mutate(Date = as.Date(Date),
-           Stage_1 = case_when(str_detect(Stage,"inal") ~ Stage,
+           Stage = case_when(str_detect(Stage,"inal") ~ Stage,
                              TRUE ~ paste(Stage, routine_number, sep ="_")
                              )
            )|> 
-    select(event_uuid, Date, Event,   Discipline, Competition, Competitor, Club, Country, Stage, Stage_1, routine_number,
+    select(event_uuid, Date, Event,   Discipline, Competition, Competitor, Club, Country, Stage,
            Rank, Total, Mark, '# Elements', Execution, T, H, D, everything()) |> 
     arrange(desc(Date), Discipline, Competition, group_number, performance_number, Competitor) |> 
     select(-c(group_number, performance_number))
 
 write_csv(events,"Dataout/all_events.csv")
+
 
 
 
