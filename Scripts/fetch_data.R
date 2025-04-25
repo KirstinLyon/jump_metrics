@@ -9,7 +9,7 @@ library(kickout)
 library(dplyr)
 library(stringr)
 library(readr)
-
+library(flexdashboard)
 
 
 # GLOBAL VARIABLES -------------------------------------------------
@@ -55,21 +55,23 @@ events <- purrr::map(event_list$event_id, ~ kickout::fetch_event_url(.x, event_l
                   Stage = stage,
                   Competition = competition,
                   Discipline = discipline,
-                  '# Elements' = number_elements,
+                  Elements = number_elements,
                   Rank = rank
     ) |> 
     mutate(Date = as.Date(Date),
            Stage = case_when(str_detect(Stage,"inal") ~ Stage,
                              TRUE ~ paste(Stage, routine_number, sep ="_")
-                             )
+                             ),
+           is_complete = case_when(Elements == 10 ~ "Complete",
+                                   TRUE ~ "Incomplete"
+                                   )
            )|> 
     select(event_uuid, Date, Event,   Discipline, Competition, Competitor, Club, Country, Stage,
-           Rank, Total, Mark, '# Elements', Execution, T, H, D, everything()) |> 
+           Rank, Total, Mark, Elements, Execution, T, H, D, everything()) |> 
     arrange(desc(Date), Discipline, Competition, group_number, performance_number, Competitor) |> 
     select(-c(group_number, performance_number))
 
 write_csv(events,"Dataout/all_events.csv")
-
 
 
 
