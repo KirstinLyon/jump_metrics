@@ -56,9 +56,9 @@ renderDT(
 ## Column {.sidebar}
 
 ```{r}
-#selectInput('year', 'year', start_data$year)
-#selectInput('title', 'title', start_data$title)
-#selectInput('country', 'country', start_data$country)
-#selectInput('club', 'club', start_data$club)
+selectInput('year', 'year', start_data$year)
+selectInput('title', 'title', start_data$title)
+selectInput('country', 'country', start_data$country)
+selectInput('club', 'club', start_data$club)
 
 ```
