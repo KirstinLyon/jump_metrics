@@ -22,6 +22,8 @@ START_YEAR <- 2023
 EVENTS <- c("DanCup", "Scandinavian Open", "Forbunds", "DM Senior",
             "Nordic", "Frivolten", "FIG", "DM u12")
 
+DISCIPLINE <- c("TRA")
+
 # Combine patterns into a single string with | as the separator
 KEEP_EVENTS <- paste(EVENTS, collapse = "|")
 
@@ -172,7 +174,7 @@ event_list <- kickout::fetch_past_event_list() |>
 # CREATE DATASETS ------------------------------------------------------------------
 
 # create dataset for given IDs and rename columns
-events <- purrr::map(event_list$event_id, ~ kickout::fetch_event_url(.x, event_list, c("TRA", "SYN"))) |>
+events <- purrr::map(event_list$event_id, ~ kickout::fetch_event_url(.x, event_list, DISCIPLINE)) |>
     bind_rows()|> 
     clean_names() |>
     clean_representing() |> 
