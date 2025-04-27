@@ -242,6 +242,114 @@ Column {data-width="600"}
 
 ```
 
+
+Event Overview
+================
+column {.sidebar}
+--------------------------------------------------------------
+
+```{r}
+
+# Set the default selected event in selectInput
+selectInput('Event', 'Event', choices = start_data$Event)
+selectInput('Competition', 'Competition', choices = NULL)
+
+
+observeEvent(input$Event, {
+  if (input$Event != "") {  # Only update if an event is selected
+    filtered_data <- start_data |> filter(Event == input$Event)
+    # Update Discipline input, ensuring "TRA" is the default if available
+    # Update Competition input
+    updateSelectInput(session, 'Competition', choices = sort(unique(filtered_data$Competition)))
+  } else {
+    # Reset inputs if no event is selected
+
+    updateSelectInput(session, 'Competition', choices = NULL)
+  }
+})
+
+```
+
+## Column {data-width="400"}
+
+### Execution
+```{r}
+
+renderPlot({
+ update_raw_data() |> 
+        filter(
+           Event == input$Event,
+           Competition == input$Competition)  |>
+ggplot(aes(x = as.numeric(factor(Competitor)), y = Execution)) +
+    geom_jitter(width = 0.2, height = 0) +  # Adjust width and height for jitter effect
+    theme_minimal() +
+    labs(
+         x = "Competitor",
+         y = "Execution") +
+    scale_x_continuous(breaks = NULL)+  # Remove x-axis labels
+    expand_limits(y = 0)  # This one line forces y-axis to include 0
+})
+```
+
+### Time of Flight(Seconds)
+```{r}
+
+renderPlot({
+ update_raw_data() |> 
+        filter(
+           Event == input$Event,
+           Competition == input$Competition)  |>
+ggplot(aes(x = as.numeric(factor(Competitor)), y = T)) +
+    geom_jitter(width = 0.2, height = 0) +  # Adjust width and height for jitter effect
+    theme_minimal() +
+    labs(
+         x = "Competitor",
+         y = "ToF") +
+    scale_x_continuous(breaks = NULL)+  # Remove x-axis labels
+    expand_limits(y = 0)  # This one line forces y-axis to include 0
+})
+```
+
+### Horizontal Displacement
+```{r}
+
+renderPlot({
+ update_raw_data() |> 
+        filter(
+           Event == input$Event,
+           Competition == input$Competition)  |>
+ggplot(aes(x = as.numeric(factor(Competitor)), y = H)) +
+    geom_jitter(width = 0.2, height = 0) +  # Adjust width and height for jitter effect
+    theme_minimal() +
+    labs(
+         x = "Competitor",
+         y = "HD") +
+    scale_x_continuous(breaks = NULL)+  # Remove x-axis labels
+    expand_limits(y = 0)  # This one line forces y-axis to include 0
+})
+```
+
+### Difficulty
+```{r}
+
+renderPlot({
+ update_raw_data() |> 
+        filter(
+           Event == input$Event,
+           Competition == input$Competition)  |>
+ggplot(aes(x = as.numeric(factor(Competitor)), y = D)) +
+    geom_jitter(width = 0.2, height = 0) +  # Adjust width and height for jitter effect
+    theme_minimal() +
+    labs(
+         x = "Competitor",
+         y = "DD") +
+    scale_x_continuous(breaks = NULL)+  # Remove x-axis labels
+    expand_limits(y = 0)  # This one line forces y-axis to include 0
+})
+```
+
+## Column {data-width="600"}
+
 # Data
 
 ## Column
