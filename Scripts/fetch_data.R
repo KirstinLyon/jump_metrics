@@ -197,7 +197,7 @@ events <- purrr::map(event_list$event_id, ~ kickout::fetch_event_url(.x, event_l
     ) |> 
     dplyr::rename(Event = title,
                   Competitor = name,
-                  Year = date_of_birth,
+                  Birth_Year = date_of_birth,
                   Club = club,
                   Country = country,
                   Date = date,
@@ -217,11 +217,14 @@ events <- purrr::map(event_list$event_id, ~ kickout::fetch_event_url(.x, event_l
            is_complete = case_when(Elements == 10 ~ "Complete",
                                    TRUE ~ "Incomplete"
            ),
-           Year = str_extract(Year, "\\d{4}")
+           Birth_Year = str_extract(Birth_Year, "\\d{4}"),
+           Event_Year = str_extract(Date, "\\d{4}")
     )|> 
-    select(event_uuid, Date, Event,   Discipline, Competition, Competitor, Year, Club, Country, Stage,
+    select(event_uuid, Date, Event_Year, Event,   Discipline, Competition, Competitor, Birth_Year, Club, Country, Stage,
            Rank, Total, Mark, Elements, Execution, T, H, D, everything()) |> 
     arrange(desc(Date), Discipline, Competition, group_number, performance_number, Competitor) |> 
     select(-c(group_number, performance_number))
 
 write_csv(events,"Dataout/all_events.csv")
+
+

@@ -112,6 +112,7 @@ datatable(iris) |>
 #---------------------
 
 library(tidyverse)
+library(DT)
 
 data <- data.frame(
     Event = c('Event1', 'Event2', 'Event3'),
@@ -144,3 +145,13 @@ data <- ktk %>%
 
 # Create the datatable with escape = FALSE to render HTML
 datatable(data, escape = FALSE)
+
+
+#---------------CREATE TABLE WITH DETAILS
+data <- ktk |> 
+    select(Competitor, H, D, T) 
+
+datatable(data, escape = FALSE)
+    
+
+
