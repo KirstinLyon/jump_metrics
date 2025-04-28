@@ -82,7 +82,8 @@ data_name_variation_map <-
         "Vanilla Søkær",                 "Vanilla Søkjær",
         "Smilla Beck",            "Smilla Vinding Beck",
         "Storm Højlo",             "Storm Skotte Højlo",
-        "Villads Nemeth",        "Villads Hilstrup Nemeth"
+        "Villads Nemeth",        "Villads Hilstrup Nemeth",
+        "Illija Ferhardt","Illia Ferhardt"
     )
 
 save(data_representing_map, data_name_club_map, data_name_variation_map, file ="Data/datasets.rda")

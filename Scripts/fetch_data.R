@@ -9,7 +9,6 @@ library(kickout)
 library(dplyr)
 library(stringr)
 library(readr)
-library(flexdashboard)
 
 load("Data/datasets.rda")  ## for standardizing names, etc
 
@@ -179,6 +178,23 @@ events <- purrr::map(event_list$event_id, ~ kickout::fetch_event_url(.x, event_l
     clean_names() |>
     clean_representing() |> 
     clean_international_name() |> 
+    
+    dplyr::mutate(
+        
+        execution = dplyr::case_when(discipline == "TRA" ~ as.numeric(execution)/10,
+                                     TRUE ~ as.numeric(execution)),
+        T = dplyr::case_when(discipline == "TRA" ~  as.numeric(T)/1000,
+                             TRUE ~ as.numeric(T)),
+        mark_total = dplyr::case_when(discipline == "TRA" ~ as.numeric(mark_total)/ 1000,
+                                      TRUE ~ as.numeric(mark_total)),
+        mark = dplyr::case_when(discipline == "TRA" ~ as.numeric(mark)/ 1000,
+                                TRUE ~ as.numeric(mark)),
+        H = dplyr::case_when(discipline == "TRA" ~ as.numeric(H)/10,
+                             TRUE ~ as.numeric(H)),
+        H = H / 10,
+        D = dplyr::case_when(discipline  == "TRA" ~ as.numeric(D)/10,
+                             TRUE ~ as.numeric(D))
+    ) |> 
     dplyr::rename(Event = title,
                   Competitor = name,
                   Year = date_of_birth,
@@ -209,6 +225,3 @@ events <- purrr::map(event_list$event_id, ~ kickout::fetch_event_url(.x, event_l
     select(-c(group_number, performance_number))
 
 write_csv(events,"Dataout/all_events.csv")
-
-
-
