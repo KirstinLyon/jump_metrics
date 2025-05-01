@@ -19,6 +19,7 @@ resource_files:
 
 ```{r setup, include=FALSE}
 library(DT)
+library(reactable)
 library(dplyr)
 library(flexdashboard)
 library(shiny)
@@ -28,6 +29,7 @@ library(ggplot2)
 library(plotly)
 library(shinyWidgets)
 library(tidyr)
+library(knitr)
 
 
 # Source the script that generates the 'events' dataset
@@ -67,7 +69,9 @@ update_score_data <- reactive({
 
 ```
 
-## Column {data-width="600"}
+
+
+## Column {data-width="500"}
 
 **Kickout - Analysing Trampoline Competition Data**
 
@@ -262,7 +266,7 @@ renderPlot({
 })
 ```
 
-## Column {data-width="600"}
+## Column
 
 ```{r}
 div(style = "height: 55px;")  # Adjust the height as needed
@@ -414,6 +418,15 @@ datatable(
   options = list(
     columnDefs = list(list(
       targets = 10:20, # Apply to all columns except the first one
+      createdCell = JS(
+        "function(td, cellData, rowData, row, col) {",
+        "  $(td).css({",
+        "    'padding': '0',",
+        "    'margin': '0',",
+        "    'height': '100%'",
+        "  });",
+        "}"
+      ),
       render = JS(
         "function(data, type, row) {",
         "  var value = parseFloat(data);",
