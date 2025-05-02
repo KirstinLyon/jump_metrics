@@ -1,0 +1,225 @@
+---
+title: "Individual Details"
+output:
+  flexdashboard::flex_dashboard:
+    theme: yeti
+runtime: shiny
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+
+
+# Competitor Skills & ToF
+
+## column {.sidebar}
+
+This dashboard displays the results skills and ToF for an individual Competitor. Use the provided filters to customise the data and update the view according to your preferences.
+
+```{r}
+
+# Sort competitor names alphabetically
+sorted_club <- sort(unique(start_data$Club))
+
+
+selectInput('Club_1', 'Club',
+            choices = sorted_club,
+            selected = "KTK")  # Set default to the first name in the sorted list
+
+selectInput('Competitor_1', 'Competitor', choices = NULL)
+#selectInput('is_complete_1', 'Skills', choices = start_data$is_complete, selected = "Complete")
+
+pickerInput(
+  inputId = "is_complete_1",
+  label = "Skills Completed:", 
+  choices = unique(start_data$is_complete),
+  selected = "Complete",
+  options = list(
+    `actions-box` = TRUE,  # Adds "Select All" buttons
+  ),
+  multiple = TRUE  # Allows multiple selections
+)
+
+
+pickerInput(
+  inputId = "Stage_1",
+  label = "Select Stage(s):", 
+  choices = unique(start_data$Stage),
+  selected = c("Final", "Qualification_2"),
+  options = list(
+    `actions-box` = TRUE,  # Adds "Select All" buttons
+    `selected-text-format` = "count > 2"  # Shows count when >2 selected
+  ),
+  multiple = TRUE  # Allows multiple selections
+)
+
+
+# Observe changes in Club selection to update other inputs
+# Observe changes in Club selection to update Competitor input
+observeEvent(input$Club_1, {
+  if (input$Club != "") {  # Only update if a club is selected
+    filtered_data <- start_data |> filter(Club == input$Club_1)
+    updateSelectInput(session, 'Competitor_1', choices = sort(unique(filtered_data$Competitor)))
+  } else {
+    updateSelectInput(session, 'Competitor_1', choices = NULL)
+  }
+})
+
+# Observe changes in Competitor selection to update other inputs
+observeEvent(input$Competitor_1, {
+  if (input$Competitor_1 != "") {  # Only update if a competitor is selected
+    filtered_data <- start_data |>  filter(Competitor == input$Competitor_1)
+
+    updateSelectInput(session, 'Stage_1', choices = sort(filtered_data$Stage), selected = c("Final", "Qualification_2"))
+    updateSelectInput(session, 'is_complete_1', choices = sort(unique(filtered_data$is_complete)))
+  } else {
+
+    updateSelectInput(session, 'Stage_1', choices = NULL, selected = c("Final", "Qualification_2"))
+    updateSelectInput(session, 'is_complete_1', choices = NULL, selected = "Complete")
+  }
+})
+
+```
+
+## column {data-width="400"}
+
+```{r}
+
+# Use a div with a specific height to create space
+div(style = "height: 24px;")  # Adjust the height as needed
+
+# Text output with dynamic content and inline styles
+div(style = "font-size: 24px; font-weight: bold;", textOutput("competitorLabel_detail"))
+# Server logic to update the text output
+output$competitorLabel_detail <- renderText({
+  selected_competitor <- input$Competitor_1
+  if (selected_competitor != "") {
+    paste(selected_competitor)
+  } else {
+    "No Competitor selected"
+  }
+})
+```
+
+### Skills & ToF (Seconds)
+
+```{r}
+library(reactable)
+library(dplyr)
+library(sparkline)
+
+renderReactable({
+  # Filter and prepare data
+  plot_data <- detailed_data %>%
+    filter(
+      Competitor == input$Competitor_1,
+      Stage %in% input$Stage_1,
+      is_complete %in% input$is_complete_1
+    ) %>%
+    select(Date, 
+           Event, 
+           Competition,
+           Stage,
+           Execution,
+        matches("^s[0-9]+$"),  # s1-s10
+          l, 
+        T,
+        matches("^t[0-9]+$")    # t1-t10
+    )%>%
+    # Convert only s1-s10 to integers
+    mutate(across(num_range("s", 1:10), ~ as.integer(round(.x))))
+  
+  # Teal color gradient
+  teal_palette <- colorRampPalette(c("#E0F2F1", "#008080"))
+  get_teal_color <- function(value) {
+    teal_palette(11)[value + 1]
+  }
+  
+# Create area sparklines with NA handling
+#plot_data$Trend <- lapply(1:nrow(plot_data), function(i) {
+  # Get all t values that exist
+#  t_values <- plot_data[i, grep("^t[0-9]+$", names(plot_data))]
+  
+  # Convert to numeric and handle NAs
+#  numeric_vals <- suppressWarnings(as.numeric(t_values))
+#  clean_vals <- na.omit(numeric_vals)
+  
+  # Only create sparkline if we have at least 2 data points
+#  if(length(clean_vals) >= 2) {
+#    sparkline(
+#      clean_vals,
+#      type = "area",
+#      lineColor = "#008080",
+#      fillColor = "#E0F2F1",  # Lighter teal for fill
+#      width = 100,
+#      height = 30,
+#      chartRangeMin = min(numeric_vals, na.rm = TRUE),  # Auto-scale
+#     chartRangeMax = max(numeric_vals, na.rm = TRUE)
+#    )
+#  } else {
+    # Return empty placeholder if insufficient data
+#    htmltools::div(style = "width:100px; height:30px; line-height:30px; text-align:center;", 
+#                  "No Data")
+#  }
+#})
+  
+  # Column definitions
+  column_defs <- list()
+  
+  # Integer formatting for s1-s10 only
+  for(col in paste0("s", 1:10)) {
+    column_defs[[col]] <- colDef(
+      style = function(value) {
+        list(
+          background = get_teal_color(value),
+          color = ifelse(value > 5, "white", "black"),
+          textAlign = "center",
+          fontWeight = "bold"
+        )
+      },
+      format = colFormat(digits = 0)  # No decimals for s1-s10
+    )
+  }
+  
+  # l column with original formatting (1 decimal)
+  column_defs$l <- colDef(
+    style = function(value) {
+      list(
+        background = get_teal_color(value),
+        color = ifelse(value > 5, "white", "black"),
+        textAlign = "center",
+        fontWeight = "bold"
+      )
+    },
+    format = colFormat(digits = 1)  # Keep one decimal for l
+  )
+  
+  # Trend column
+  column_defs$Trend <- colDef(
+    cell = function(value) value,
+    html = TRUE,
+    name = "Time Trend",
+    align = "center",
+    width = 120
+  )
+  
+  # Hide t1-t10 columns
+  for(t_col in paste0("t", 1:10)) {
+    column_defs[[t_col]] <- colDef(show = FALSE)
+  }
+  
+  # Render table
+  reactable(
+    plot_data,
+    columns = column_defs,
+    defaultColDef = colDef(
+      headerStyle = list(background = "#f7f7f7")
+    ),
+    highlight = TRUE,
+    bordered = TRUE,
+    pagination = TRUE
+  )
+})
+
+```
