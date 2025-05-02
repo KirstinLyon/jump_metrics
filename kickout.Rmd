@@ -78,16 +78,16 @@ update_score_data <- reactive({
 
 
 
-```{r child1, child='Markdown/1_intro.Rmd', eval = TRUE}
+```{r child1, child='Markdown/1_intro.Rmd', eval = FALSE}
 ```
 
-```{r child2, child='Markdown/event.Rmd', eval = TRUE}
+```{r child2, child='Markdown/event.Rmd', eval = FALSE}
 ```
 
-```{r child3, child='Markdown/2_indiv_trend.Rmd', eval = TRUE}
+```{r child3, child='Markdown/2_indiv_trend.Rmd', eval = FALSE}
 ```
 
-```{r child4, child='Markdown/3_indiv_detail.Rmd', eval = FALSE}
+```{r child4, child='Markdown/3_indiv_detail.Rmd', eval = TRUE}
 ```
 
 ```{r child5, child='Markdown/raw_data.Rmd', eval = FALSE}

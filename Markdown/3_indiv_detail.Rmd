@@ -36,7 +36,7 @@ pickerInput(
   choices = unique(start_data$is_complete),
   selected = "Complete",
   options = list(
-    `actions-box` = TRUE,  # Adds "Select All" buttons
+    `actions-box` = TRUE  # Adds "Select All" buttons
   ),
   multiple = TRUE  # Allows multiple selections
 )
@@ -58,7 +58,7 @@ pickerInput(
 # Observe changes in Club selection to update other inputs
 # Observe changes in Club selection to update Competitor input
 observeEvent(input$Club_1, {
-  if (input$Club != "") {  # Only update if a club is selected
+  if (input$Club_1 != "") {  # Only update if a club is selected
     filtered_data <- start_data |> filter(Club == input$Club_1)
     updateSelectInput(session, 'Competitor_1', choices = sort(unique(filtered_data$Competitor)))
   } else {
@@ -71,12 +71,21 @@ observeEvent(input$Competitor_1, {
   if (input$Competitor_1 != "") {  # Only update if a competitor is selected
     filtered_data <- start_data |>  filter(Competitor == input$Competitor_1)
 
-    updateSelectInput(session, 'Stage_1', choices = sort(filtered_data$Stage), selected = c("Final", "Qualification_2"))
-    updateSelectInput(session, 'is_complete_1', choices = sort(unique(filtered_data$is_complete)))
+    updatePickerInput(session, 'is_complete_1', 
+                     choices = sort(unique(filtered_data$is_complete)), 
+                     selected = "Complete")
+    updatePickerInput(session, 'Stage_1', 
+                     choices = sort(unique(filtered_data$Stage)), 
+                     selected = c("Final", "Qualification_2"))
   } else {
 
-    updateSelectInput(session, 'Stage_1', choices = NULL, selected = c("Final", "Qualification_2"))
-    updateSelectInput(session, 'is_complete_1', choices = NULL, selected = "Complete")
+    updatePickerInput(session, 'is_complete_1', 
+                     choices = unique(start_data$is_complete), 
+                     selected = "Complete")
+    
+    updatePickerInput(session, 'Stage_1', 
+                     choices = unique(start_data$Stage), 
+                     selected = c("Final", "Qualification_2"))
   }
 })
 
