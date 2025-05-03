@@ -8,9 +8,9 @@ The `jump_metrics` project is designed to streamline the analysis of competition
 
 1: Extract a list of competitions
 
-2: Clean a csv file
+2: Create a csv file based on competition IDs
 
-3: Clean an event based on an ID
+3: Create a shiny app to visualize the data
 
 
 ## License
