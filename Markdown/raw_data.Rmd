@@ -1,0 +1,26 @@
+---
+title: "Raw Data"
+output:
+  flexdashboard::flex_dashboard:
+    theme: yeti
+runtime: shiny
+editor_options:
+  markdown:
+    wrap: 72
+---
+# Data
+
+## Column
+
+### All Events
+
+```{r}
+renderDT(
+  update_raw_data(), rownames = F, extensions = 'Buttons', filter="top", editable=T,
+  options = list(
+    dom = 'Blfrtip',
+    buttons = c('csv', 'excel', 'pdf', 'print'),
+    lengthMenu = list(c(10,50,100,-1),c(10,50,100,"All"))
+  )
+)
+```

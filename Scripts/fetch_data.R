@@ -9,7 +9,6 @@ library(kickout)
 library(dplyr)
 library(stringr)
 library(readr)
-library(flexdashboard)
 
 load("Data/datasets.rda")  ## for standardizing names, etc
 
@@ -179,9 +178,26 @@ events <- purrr::map(event_list$event_id, ~ kickout::fetch_event_url(.x, event_l
     clean_names() |>
     clean_representing() |> 
     clean_international_name() |> 
+    
+    dplyr::mutate(
+        
+        execution = dplyr::case_when(discipline == "TRA" ~ as.numeric(execution)/10,
+                                     TRUE ~ as.numeric(execution)),
+        T = dplyr::case_when(discipline == "TRA" ~  as.numeric(T)/1000,
+                             TRUE ~ as.numeric(T)),
+        mark_total = dplyr::case_when(discipline == "TRA" ~ as.numeric(mark_total)/ 1000,
+                                      TRUE ~ as.numeric(mark_total)),
+        mark = dplyr::case_when(discipline == "TRA" ~ as.numeric(mark)/ 1000,
+                                TRUE ~ as.numeric(mark)),
+        H = dplyr::case_when(discipline == "TRA" ~ as.numeric(H)/10,
+                             TRUE ~ as.numeric(H)),
+        H = H / 10,
+        D = dplyr::case_when(discipline  == "TRA" ~ as.numeric(D)/10,
+                             TRUE ~ as.numeric(D))
+    ) |> 
     dplyr::rename(Event = title,
                   Competitor = name,
-                  Year = date_of_birth,
+                  Birth_Year = date_of_birth,
                   Club = club,
                   Country = country,
                   Date = date,
@@ -201,14 +217,14 @@ events <- purrr::map(event_list$event_id, ~ kickout::fetch_event_url(.x, event_l
            is_complete = case_when(Elements == 10 ~ "Complete",
                                    TRUE ~ "Incomplete"
            ),
-           Year = str_extract(Year, "\\d{4}")
+           Birth_Year = str_extract(Birth_Year, "\\d{4}"),
+           Event_Year = str_extract(Date, "\\d{4}")
     )|> 
-    select(event_uuid, Date, Event,   Discipline, Competition, Competitor, Year, Club, Country, Stage,
+    select(event_uuid, Date, Event_Year, Event,   Discipline, Competition, Competitor, Birth_Year, Club, Country, Stage,
            Rank, Total, Mark, Elements, Execution, T, H, D, everything()) |> 
     arrange(desc(Date), Discipline, Competition, group_number, performance_number, Competitor) |> 
     select(-c(group_number, performance_number))
 
 write_csv(events,"Dataout/all_events.csv")
-
 
 

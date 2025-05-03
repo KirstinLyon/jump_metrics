@@ -1,0 +1,230 @@
+---
+title: "Individual Trends"
+output:
+  flexdashboard::flex_dashboard:
+    theme: yeti
+runtime: shiny
+editor_options:
+  markdown:
+    wrap: 72
+---
+# Competitor Overview 
+
+## Column {.sidebar}
+
+This dashboard displays the results for an individual competitor. Use the provided filters to customise the data and update the view according to your preferences.
+
+```{r}
+
+
+sorted_club <- sort(unique(start_data$Club))
+
+selectInput('Club', 'Club',
+            choices = sorted_club,
+            selected = "KTK")
+
+selectInput('Competitor', 'Competitor', choices = NULL)
+
+
+pickerInput(
+  inputId = "is_complete",
+  label = "Skills Complete:",
+  choices = unique(start_data$is_complete),
+  selected = "Complete",
+  options = list(
+    `actions-box` = TRUE
+  ),
+  multiple = TRUE
+)
+
+pickerInput(
+  inputId = "Stage",
+  label = "Select Stage(s):",
+  choices = unique(start_data$Stage),
+  selected = c("Final", "Qualification_2"),
+  options = list(
+    `actions-box` = TRUE,
+    `selected-text-format` = "count > 2"
+  ),
+  multiple = TRUE
+)
+
+# Server Logic (updated)
+observeEvent(input$Club, {
+  if (input$Club != "") {
+    filtered_data <- start_data |> filter(Club == input$Club)
+    updateSelectInput(session, 'Competitor', choices = sort(unique(filtered_data$Competitor)))
+  } else {
+    updateSelectInput(session, 'Competitor', choices = NULL)
+  }
+})
+
+observeEvent(input$Competitor, {
+  if (input$Competitor != "") {
+    filtered_data <- start_data |> filter(Competitor == input$Competitor)
+    updatePickerInput(session, 'is_complete', 
+                     choices = sort(unique(filtered_data$is_complete)), 
+                     selected = "Complete")
+    updatePickerInput(session, 'Stage', 
+                     choices = sort(unique(filtered_data$Stage)), 
+                     selected = c("Final", "Qualification_2"))
+  } else {
+    updatePickerInput(session, 'is_complete', 
+                     choices = unique(start_data$is_complete), 
+                     selected = "Complete")
+    
+    updatePickerInput(session, 'Stage', 
+                     choices = unique(start_data$Stage), 
+                     selected = c("Final", "Qualification_2"))
+  }
+})
+
+
+```
+
+## Column {data-width="200"}
+
+```{r}
+
+# Use a div with a specific height to create space
+div(style = "height: 24px;")  # Adjust the height as needed
+
+# Text output with dynamic content and inline styles
+div(style = "font-size: 24px; font-weight: bold;", textOutput("competitorLabel"))
+# Server logic to update the text output
+output$competitorLabel <- renderText({
+  selected_competitor <- input$Competitor
+  if (selected_competitor != "") {
+    paste(selected_competitor)
+  } else {
+    "No Competitor selected"
+  }
+})
+```
+
+### Execution
+
+```{r}
+renderPlot({
+ update_raw_data() |> 
+    filter(
+           Stage %in% input$Stage,
+           Competitor == input$Competitor,
+           is_complete %in% input$is_complete)  |>
+    ggplot(aes(x = Date, y = Execution, colour = Stage)) +
+    geom_line(linewidth = 0.95) +
+    geom_point(size = 3) +  # This adds dots for each data point
+    scale_color_hue(direction = 1) +
+    labs( y = "Execution") +
+    theme_minimal() +
+    theme(legend.position = "top", legend.justification = "right")+
+    expand_limits(y = 0)  # This one line forces y-axis to include 0
+})
+```
+
+### Difficulty
+
+```{r}
+renderPlot({
+ update_raw_data() |> 
+    filter(
+           Stage %in% input$Stage,
+           Competitor == input$Competitor,
+           is_complete %in% input$is_complete)  |>
+    ggplot(aes(x = Date, y = D, colour = Stage)) +
+    geom_line(linewidth = 0.95) +
+    geom_point(size = 3) +  # This adds dots for each data point
+    scale_color_hue(direction = 1) +
+    labs( y = "Difficulty") +
+    theme_minimal() +
+    theme(legend.position = "top", legend.justification = "right")+
+    expand_limits(y = 0)  # This one line forces y-axis to include 0
+})
+```
+
+### Time of Flight (Seconds)
+
+```{r}
+renderPlot({
+ update_raw_data() |> 
+    filter(
+           Stage %in% input$Stage,
+           Competitor == input$Competitor,
+           is_complete %in% input$is_complete)  |>
+    ggplot(aes(x = Date, y = T, colour = Stage)) +
+    geom_line(linewidth = 0.95) +
+    geom_point(size = 3) +  # This adds dots for each data point
+    scale_color_hue(direction = 1) +
+    labs(y = "Time of Flight (S)") +
+    theme_minimal() +
+    theme(legend.position = "top", legend.justification = "right")+
+    expand_limits(y = 0)  # This one line forces y-axis to include 0
+})
+```
+
+### Horizontal Displacement
+
+```{r}
+renderPlot({
+ update_raw_data() |> 
+    filter(
+           Stage %in% input$Stage,
+           Competitor == input$Competitor,
+           is_complete %in% input$is_complete)  |>
+    ggplot(aes(x = Date, y = H, colour = Stage)) +
+    geom_line(linewidth = 0.95) +
+    geom_point(size = 3) +  # This adds dots for each data point
+    scale_color_hue(direction = 1) +
+    labs(y = "Horizontal Displacement") +
+    theme_minimal() +
+    theme(legend.position = "top", legend.justification = "right")+
+    expand_limits(y = 0)  # This one line forces y-axis to include 0
+})
+```
+
+## Column
+
+```{r}
+div(style = "height: 55px;")  # Adjust the height as needed
+textOutput("competitorLabel_1")
+
+output$competitorLabel_1 <- renderText({
+  paste("")  # This will render as empty text
+})
+```
+
+### Overall Scores
+
+```{r}
+
+renderDT({
+  # Filter the data using dplyr
+  filtered_data <- score_data |> 
+
+    filter(
+
+           Competitor == input$Competitor,
+           Stage %in% input$Stage,
+           is_complete %in% input$is_complete 
+
+)   |> 
+    
+    select(-c(Date, Country, is_complete, Club, Total, Competitor)) |> 
+    rename(Year = Event_Year) |> 
+    select(Year, Event, everything())
+
+  # Render the data table with DT
+datatable(
+  filtered_data,
+  rownames = FALSE,
+    options = list(
+    lengthMenu = list(c(25,50,100,-1),c(25,50,100,"All"))
+  )
+  
+  
+  )
+
+})
+
+
+```

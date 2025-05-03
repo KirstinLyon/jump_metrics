@@ -1,0 +1,51 @@
+---
+title: "Introduction to App"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: yeti
+    orientation: columns
+    vertical_layout: fill
+runtime: shiny
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+# Welcome to Kickout!
+
+## Column {data-width="500"}
+
+**Kickout - Analysing Trampoline Competition Data**
+
+This app delivers insights into individual trampoline events, with a
+special focus on trampoline gymnasts in Denmark, particularly those from
+Københavns Trampoline Club (KTK). Powered by data from SportTech.io, the
+app is updated every Monday. The data coverage begins from 2023 onwards,
+providing a current and relevant overview of trampoline events and
+performances.
+
+Events included in Data
+
+\- Dancup 1, 2 and 3
+
+\- DM (aka Forbundsmesterskb u13, u15 and u17)
+
+\- DM Senior
+
+\- DM Senior Hold
+
+\- FIG Trampoline World Cup
+
+\- Nordic Trampoline Championships
+
+\- Scandinavian Open
+
+## Column {data-width="200"}
+
+## Column {data-width="600"}
+
+
+<img src="Images/trampoline-2589684135.jpg" width="500"/>
+
+
+[Rules from FIG](https://www.gymnastics.sport/site/rules/#7)

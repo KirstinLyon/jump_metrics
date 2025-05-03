@@ -1,0 +1,255 @@
+---
+title: "Event Overview"
+output:
+  flexdashboard::flex_dashboard:
+    theme: yeti
+runtime: shiny
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+# Event Overview
+
+
+## column {.sidebar}
+
+This dashboard displays the results for an individual event. Use the provided filters to customise the data and update the view according to your preferences.
+
+```{r}
+# Sort competitor names alphabetically
+
+latest_year <- max(start_data$Event_Year)
+
+selectInput("Event_Year", "Event Year",
+            choices = sort(unique(start_data$Event_Year)),
+            selected = latest_year)
+
+selectInput('Event', 'Event',
+            choices = start_data$Event)  # Set default to the first name in the sorted list
+
+selectInput('Competition', 'Competition', choices = start_data$Competition)  # Set default to the first name in the sorted list
+
+pickerInput(
+  inputId = "is_complete_2",
+  label = "Skills Complete:", 
+  choices = unique(start_data$is_complete),
+  selected = c("Complete"),
+  options = list(
+    `actions-box` = TRUE  # Adds "Select All" buttons
+ ),
+ multiple = TRUE  # Allows multiple selections
+)
+
+
+pickerInput(
+  inputId = "Stage_2",
+  label = "Select Stage(s):", 
+  choices = unique(start_data$Stage),
+  selected = c("Final", "Qualification_2"),
+  options = list(
+    `actions-box` = TRUE,  # Adds "Select All" buttons
+    `selected-text-format` = "count > 2"  # Shows count when >2 selected
+ ),
+ multiple = TRUE  # Allows multiple selections
+)
+
+
+# Observe changes in Club selection to update other inputs
+# Observe changes in Club selection to update Competitor input
+observeEvent(input$Event_Year, {
+  if (input$Event_Year != "") {  # Only update if a club is selected
+    filtered_data <- start_data |> filter(Event_Year == input$Event_Year)
+    updateSelectInput(session, 'Event', choices = sort(unique(filtered_data$Event)))
+  } else {
+    updateSelectInput(session, 'Event', choices = NULL)
+  }
+})
+
+# Observe changes in Competitor selection to update other inputs
+observeEvent(input$Event, {
+  if (input$Event != "") {  # Only update if a competitor is selected
+    filtered_data <- start_data |>  filter(Event == input$Event)
+    updateSelectInput(session, 'Competition', choices = sort(unique(filtered_data$Competition)))
+    updatePickerInput(session, 'is_complete_2', 
+                     choices = sort(unique(filtered_data$is_complete)), 
+                     selected = "Complete")
+    updatePickerInput(session, 'Stage_2', 
+                     choices = sort(unique(filtered_data$Stage)), 
+                     selected = c("Final", "Qualification_2"))
+  } else {
+    updateSelectInput(session, 'Competition', choices = NULL, selected = "Competition")
+    updatePickerInput(session, 'is_complete_2', 
+                     choices = unique(start_data$is_complete), 
+                     selected = "Complete")
+    
+    updatePickerInput(session, 'Stage_2', 
+                     choices = unique(start_data$Stage), 
+                     selected = c("Final", "Qualification_2"))
+  }
+})
+
+
+```
+
+## column {data-width="200"}
+```{r}
+
+# Use a div with a specific height to create space
+div(style = "height: 24px;")  # Adjust the height as needed
+
+# Text output with dynamic content and inline styles
+div(style = "font-size: 24px; font-weight: bold;", textOutput("eventLabel"))
+# Server logic to update the text output
+output$eventLabel <- renderText({
+  selected_event <- input$Event
+  if (selected_event != "") {
+    paste(selected_event)
+  } else {
+    "No Event selected"
+  }
+})
+```
+
+### Execution
+
+```{r}
+
+renderPlot({
+ update_raw_data() |> 
+        filter(
+           Event == input$Event,
+           Competition == input$Competition,
+           Stage %in% input$Stage_2,
+           is_complete %in% input$is_complete_2  
+           )  |>
+ggplot(aes(x = as.numeric(factor(Competitor)), y = Execution)) +
+    geom_jitter(width = 0.2, height = 0) +  # Adjust width and height for jitter effect
+    theme_minimal() +
+    labs(
+         x = "Competitor",
+         y = "Execution") +
+    scale_x_continuous(breaks = NULL)+  # Remove x-axis labels
+    expand_limits(y = 0)  # This one line forces y-axis to include 0
+})
+```
+
+### Time of Flight(Seconds)
+
+```{r}
+
+renderPlot({
+ update_raw_data() |> 
+        filter(
+           Event == input$Event,
+           Competition == input$Competition,
+           Stage %in% input$Stage_2,
+           is_complete %in% input$is_complete_2  
+           )  |>
+ggplot(aes(x = as.numeric(factor(Competitor)), y = T)) +
+    geom_jitter(width = 0.2, height = 0) +  # Adjust width and height for jitter effect
+    theme_minimal() +
+    labs(
+         x = "Competitor",
+         y = "ToF") +
+    scale_x_continuous(breaks = NULL)+  # Remove x-axis labels
+    expand_limits(y = 0)  # This one line forces y-axis to include 0
+})
+```
+
+### Horizontal Displacement
+
+```{r}
+
+renderPlot({
+ update_raw_data() |> 
+        filter(
+           Event == input$Event,
+           Competition == input$Competition,
+           Stage %in% input$Stage_2,
+           is_complete %in% input$is_complete_2  
+           )  |>
+ggplot(aes(x = as.numeric(factor(Competitor)), y = H)) +
+    geom_jitter(width = 0.2, height = 0) +  # Adjust width and height for jitter effect
+    theme_minimal() +
+    labs(
+         x = "Competitor",
+         y = "HD") +
+    scale_x_continuous(breaks = NULL)+  # Remove x-axis labels
+    expand_limits(y = 0)  # This one line forces y-axis to include 0
+})
+```
+
+### Difficulty
+
+```{r}
+
+renderPlot({
+ update_raw_data() |> 
+        filter(
+           Event == input$Event,
+           Competition == input$Competition,
+           Stage %in% input$Stage_2,
+           is_complete %in% input$is_complete_2            
+           )  |>
+ggplot(aes(x = as.numeric(factor(Competitor)), y = D)) +
+    geom_jitter(width = 0.2, height = 0) +  # Adjust width and height for jitter effect
+    theme_minimal() +
+    labs(
+         x = "Competitor",
+         y = "DD") +
+    scale_x_continuous(breaks = NULL)+  # Remove x-axis labels
+    expand_limits(y = 0)  # This one line forces y-axis to include 0
+})
+```
+
+## Column {data-width="700"}
+
+```{r}
+
+# Use a div with a specific height to create space
+div(style = "height: 24px;")  # Adjust the height as needed
+
+# Text output with dynamic content and inline styles
+div(style = "font-size: 24px; font-weight: bold;", textOutput("competitionLabel"))
+# Server logic to update the text output
+output$competitionLabel <- renderText({
+  selected_competition <- paste("Competition:", input$Competition)
+  if (selected_competition != "") {
+    paste(selected_competition)
+  } else {
+    "No Competition selected"
+  }
+})
+```
+
+### Chart
+
+```{r}
+renderDT({
+  # Filter the data using dplyr
+  filtered_data <- score_data |> 
+
+    filter(
+           Event == input$Event,
+           Competition == input$Competition,
+           Stage %in% input$Stage_2,
+           is_complete %in% input$is_complete_2 
+
+)   |> 
+    select(-c(Event_Year, Event, Competition, Date, is_complete, Total)) |> 
+    arrange(Stage, Rank)
+
+  # Render the data table with DT
+datatable(
+  filtered_data,
+  rownames = FALSE,
+    options = list(
+    lengthMenu = list(c(25,50,100,-1),c(25,50,100,"All"))
+  )
+  
+  
+  )
+
+})
+```

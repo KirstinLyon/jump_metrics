@@ -112,6 +112,7 @@ datatable(iris) |>
 #---------------------
 
 library(tidyverse)
+library(DT)
 
 data <- data.frame(
     Event = c('Event1', 'Event2', 'Event3'),
@@ -144,3 +145,86 @@ data <- ktk %>%
 
 # Create the datatable with escape = FALSE to render HTML
 datatable(data, escape = FALSE)
+
+
+#---------------CREATE TABLE WITH DETAILS
+data <- ktk |> 
+    select(Competitor, H, D, T) 
+
+datatable(data, escape = FALSE)
+    
+
+########################
+
+library(readr)
+library(dplyr)
+library(reactable)
+library(shiny)
+
+events <- read_csv("Dataout/all_events.csv")
+
+
+detailed_data <- events |> 
+    select(Date, Event,Event_Year, Competition, Competitor, Country, Club, Stage, Total, Mark, Elements, Execution, T, D, H,
+           s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, l, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, is_complete) 
+
+
+
+renderReactable({
+    # Filter the data using dplyr
+    filtered_data <- detailed_data |>
+        filter(
+            Competitor == input$Competitor_1,
+            Stage %in% input$Stage_1,
+            is_complete == input$is_complete_1
+        ) |>
+        rename(Year = Event_Year) |>
+        select(Year, Event, everything())  # Keep t1–t10 for sparklines
+    
+    # Color mapping function
+    color_mapping <- function(value) {
+        alpha <- max(0, min(1, 0.1 * (value - 1)))
+        sprintf("rgba(0, 128, 128, %.2f)", alpha)
+    }
+    
+    # Define columns to style: s1-s10 and l
+    score_columns <- c(paste0("s", 1:10), "l")
+    
+    # Styled columns
+    styled_cols <- setNames(
+        lapply(score_columns, function(col) {
+            colDef(
+                style = function(value) {
+                    list(
+                        background = color_mapping(value),
+                        textAlign = "center"
+                    )
+                }
+            )
+        }),
+        score_columns
+    )
+    
+    # Add sparkline column
+ #   styled_cols[["Trend"]] <- colDef(
+ #       cell = function(rowIndex) {
+ #           values <- as.numeric(filtered_data[rowIndex, paste0("t", 1:10)])
+ #           sparkline(values, lineColor = "teal", fillColor = "lightblue")
+ #       },
+ #       name = "Trend",
+ #       html = TRUE,
+ #       align = "center"
+ #   )
+    
+    reactable(
+        filtered_data,
+        columns = styled_cols,
+        pagination = TRUE,
+        defaultPageSize = 25,
+        showPageSizeOptions = TRUE,
+        pageSizeOptions = c(25, 50, nrow(filtered_data))
+    )
+})
+
+
+unique
