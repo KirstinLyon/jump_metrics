@@ -38,15 +38,15 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```{r load_data, include=FALSE}
 
 # Source the script that generates the 'events' dataset
-events <- read_csv("Dataout/all_events.csv")
+#events <- read_csv("Dataout/all_events.csv")
 
 
- #events <-  read_csv("https://raw.githubusercontent.com/KirstinLyon/jump_metrics/refs/heads/main/Dataout/all_events.csv")
+events <-  read_csv("https://raw.githubusercontent.com/KirstinLyon/jump_metrics/refs/heads/main/Dataout/all_events.csv")
  
  start_data <- events  |> 
   mutate(Year = lubridate::year(Date)) |> 
-  select(Year, Date, Event, Event_Year, Competition, Competitor, Birth_Year,Country, Club, Stage,
-         Rank, Total, Mark, Elements, Execution, T, D, H, is_complete)  
+  select(Year, Date, Event, Event_Year, Competition, Competitor, Birth_Year, Country, Club, Stage, Elements,
+         Rank, Total, Mark,  Execution, T, D, H, is_complete)  
 
 
 compact_data <- start_data 
@@ -56,7 +56,7 @@ update_raw_data <- reactive({
 })
 
 detailed_data <- events |> 
-  select(Date, Event,Event_Year, Competition, Competitor, Country, Club, Stage, Total, Mark, Elements, Execution, T, D, H,
+  select(Date, Event,Event_Year, Competition, Competitor, Country, Club, Stage, Elements, Total, Mark,  Execution, T, D, H,
          s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, l, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, is_complete) 
 
 
@@ -66,7 +66,7 @@ update_detailed_data <- reactive({
 
 
 score_data <- events |> 
-  select(Date, Event,Event_Year, Competition, Rank, Competitor, Country, Club, Stage, Total, Mark, Elements, Execution, T, D, H, is_complete) 
+  select(Date, Event,Event_Year, Competition, Rank, Competitor, Country, Club, Stage, Elements, Total, Mark,  Execution, T,  H, D, is_complete) 
 
 update_score_data <- reactive({
   score_data
@@ -78,18 +78,18 @@ update_score_data <- reactive({
 
 
 
-```{r child1, child='Markdown/1_intro.Rmd', eval = FALSE}
+```{r child1, child='Markdown/1_intro.Rmd', eval = TRUE}
 ```
 
-```{r child2, child='Markdown/event.Rmd', eval = FALSE}
+```{r child2, child='Markdown/event.Rmd', eval = TRUE}
 ```
 
-```{r child3, child='Markdown/2_indiv_trend.Rmd', eval = FALSE}
+```{r child3, child='Markdown/2_indiv_trend.Rmd', eval = TRUE}
 ```
 
 ```{r child4, child='Markdown/3_indiv_detail.Rmd', eval = TRUE}
 ```
 
-```{r child5, child='Markdown/raw_data.Rmd', eval = FALSE}
+```{r child5, child='Markdown/raw_data.Rmd', eval = TRUE}
 ```
 
