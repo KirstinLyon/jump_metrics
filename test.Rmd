@@ -1,0 +1,47 @@
+---
+title: "Test Reactable Header Alignment"
+output:
+  flexdashboard::flex_dashboard:
+      theme: null
+runtime: shiny
+---
+
+```{html, echo=FALSE}
+<style>
+  /* Style to force text alignment for the headers */
+  .reactable .rt-thead .rt-th {
+    text-align: left !important;
+    padding-left: 10px !important;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Get all the header cells
+    const headers = document.querySelectorAll('.reactable .rt-th');
+    headers.forEach(header => {
+      // Apply left alignment directly
+      header.style.textAlign = 'left';
+      header.style.justifyContent = 'flex-start';
+      header.style.display = 'flex';
+      header.style.paddingLeft = '10px';
+    });
+  });
+</script>
+
+```
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(reactable)
+library(dplyr)
+```
+
+Column
+-----------------------------------------------------------------------
+
+### Left-Aligned Header Test
+```{r}
+reactable(starwars)
+
+```

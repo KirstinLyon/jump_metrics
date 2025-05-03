@@ -63,19 +63,19 @@ observeEvent(input$Competitor, {
   if (input$Competitor != "") {
     filtered_data <- start_data |> filter(Competitor == input$Competitor)
     updatePickerInput(session, 'is_complete', 
-                     choices = sort(unique(filtered_data$is_complete)), 
-                     selected = "Complete")
+                      choices = sort(unique(filtered_data$is_complete)), 
+                      selected = "Complete")
     updatePickerInput(session, 'Stage', 
-                     choices = sort(unique(filtered_data$Stage)), 
-                     selected = c("Final", "Qualification_2"))
+                      choices = sort(unique(filtered_data$Stage)), 
+                      selected = c("Final", "Qualification_2"))
   } else {
     updatePickerInput(session, 'is_complete', 
-                     choices = unique(start_data$is_complete), 
-                     selected = "Complete")
+                      choices = unique(start_data$is_complete), 
+                      selected = "Complete")
     
     updatePickerInput(session, 'Stage', 
-                     choices = unique(start_data$Stage), 
-                     selected = c("Final", "Qualification_2"))
+                      choices = unique(start_data$Stage), 
+                      selected = c("Final", "Qualification_2"))
   }
 })
 
@@ -105,39 +105,20 @@ output$competitorLabel <- renderText({
 ### Execution
 
 ```{r}
+
 renderPlot({
- update_raw_data() |> 
+  update_raw_data() |> 
     filter(
-           Stage %in% input$Stage,
-           Competitor == input$Competitor,
-           is_complete %in% input$is_complete)  |>
+      Stage %in% input$Stage,
+      Competitor == input$Competitor,
+      is_complete %in% input$is_complete)  |>
     ggplot(aes(x = Date, y = Execution, colour = Stage)) +
     geom_line(linewidth = 0.95) +
     geom_point(size = 3) +  # This adds dots for each data point
     scale_color_hue(direction = 1) +
     labs( y = "Execution") +
     theme_minimal() +
-    theme(legend.position = "top", legend.justification = "right")+
-    expand_limits(y = 0)  # This one line forces y-axis to include 0
-})
-```
-
-### Difficulty
-
-```{r}
-renderPlot({
- update_raw_data() |> 
-    filter(
-           Stage %in% input$Stage,
-           Competitor == input$Competitor,
-           is_complete %in% input$is_complete)  |>
-    ggplot(aes(x = Date, y = D, colour = Stage)) +
-    geom_line(linewidth = 0.95) +
-    geom_point(size = 3) +  # This adds dots for each data point
-    scale_color_hue(direction = 1) +
-    labs( y = "Difficulty") +
-    theme_minimal() +
-    theme(legend.position = "top", legend.justification = "right")+
+    theme(legend.position = "top", legend.justification = "right") +
     expand_limits(y = 0)  # This one line forces y-axis to include 0
 })
 ```
@@ -146,11 +127,11 @@ renderPlot({
 
 ```{r}
 renderPlot({
- update_raw_data() |> 
+  update_raw_data() |> 
     filter(
-           Stage %in% input$Stage,
-           Competitor == input$Competitor,
-           is_complete %in% input$is_complete)  |>
+      Stage %in% input$Stage,
+      Competitor == input$Competitor,
+      is_complete %in% input$is_complete)  |>
     ggplot(aes(x = Date, y = T, colour = Stage)) +
     geom_line(linewidth = 0.95) +
     geom_point(size = 3) +  # This adds dots for each data point
@@ -162,15 +143,37 @@ renderPlot({
 })
 ```
 
+
+### Difficulty
+
+```{r}
+renderPlot({
+  update_raw_data() |> 
+    filter(
+      Stage %in% input$Stage,
+      Competitor == input$Competitor,
+      is_complete %in% input$is_complete)  |>
+    ggplot(aes(x = Date, y = D, colour = Stage)) +
+    geom_line(linewidth = 0.95) +
+    geom_point(size = 3) +  # This adds dots for each data point
+    scale_color_hue(direction = 1) +
+    labs( y = "Difficulty") +
+    theme_minimal() +
+    theme(legend.position = "top", legend.justification = "right") +
+    expand_limits(y = 0)  # This one line forces y-axis to include 0
+})
+```
+
+
 ### Horizontal Displacement
 
 ```{r}
 renderPlot({
- update_raw_data() |> 
+  update_raw_data() |> 
     filter(
-           Stage %in% input$Stage,
-           Competitor == input$Competitor,
-           is_complete %in% input$is_complete)  |>
+      Stage %in% input$Stage,
+      Competitor == input$Competitor,
+      is_complete %in% input$is_complete)  |>
     ggplot(aes(x = Date, y = H, colour = Stage)) +
     geom_line(linewidth = 0.95) +
     geom_point(size = 3) +  # This adds dots for each data point
@@ -181,8 +184,7 @@ renderPlot({
     expand_limits(y = 0)  # This one line forces y-axis to include 0
 })
 ```
-
-## Column
+## Column 
 
 ```{r}
 div(style = "height: 55px;")  # Adjust the height as needed
@@ -192,38 +194,80 @@ output$competitorLabel_1 <- renderText({
   paste("")  # This will render as empty text
 })
 ```
-
-### Overall Scores
+###
 
 ```{r}
-
-renderDT({
-  # Filter the data using dplyr
-  filtered_data <- score_data |> 
-
+renderReactable({
+  # Filter and prepare data
+  plot_data <- score_data %>%
     filter(
-
-           Competitor == input$Competitor,
-           Stage %in% input$Stage,
-           is_complete %in% input$is_complete 
-
-)   |> 
-    
-    select(-c(Date, Country, is_complete, Club, Total, Competitor)) |> 
-    rename(Year = Event_Year) |> 
-    select(Year, Event, everything())
-
-  # Render the data table with DT
-datatable(
-  filtered_data,
-  rownames = FALSE,
-    options = list(
-    lengthMenu = list(c(25,50,100,-1),c(25,50,100,"All"))
-  )
+      Competitor == input$Competitor,
+      Stage %in% input$Stage,
+      is_complete %in% input$is_complete 
+    ) %>%
+    select(-c(Event_Year, is_complete, Country, Club, Competitor, Total)) |> 
+    select(Date, Event, Competition, Stage, everything()) |> 
+    arrange(desc(Date), Stage) 
   
-  
+  reactable(
+    plot_data,
+    defaultColDef = colDef(
+      headerStyle = list(background = "#f7f7f7"),
+      style = list(fontSize = "0.9em"),
+      align = "left"
+    ),
+    columns = list(
+      Execution = colDef(
+        
+        cell = reactablefmtr::data_bars(
+          data = plot_data,
+          fill_color = "#e0e0e0",
+          background = "transparent",
+          text_position = "inside-base",
+          min_value = 0,
+          max_value = 22,
+          number_fmt = function(x) sprintf("%.1f", x)
+        )
+      ),
+      T = colDef(
+        cell = reactablefmtr::data_bars(
+          data = plot_data,
+          fill_color = "#e0e0e0",
+          background = "transparent",
+          text_position = "inside-base",
+          min_value = 0,
+          max_value = 22,
+          number_fmt = function(x) sprintf("%.1f", x)
+        )
+      ),
+      H = colDef(
+        cell = reactablefmtr::data_bars(
+          data = plot_data,
+          fill_color = "#e0e0e0",
+          background = "transparent",
+          text_position = "inside-base",
+          min_value = 0,
+          max_value = 22,
+          number_fmt = function(x) sprintf("%.1f", x)
+        )
+      ),
+      D = colDef(
+        cell = reactablefmtr::data_bars(
+          data = plot_data,
+          fill_color = "#e0e0e0",
+          background = "transparent",
+          text_position = "inside-base",
+          min_value = 0,
+          max_value = 22,
+          number_fmt = function(x) sprintf("%.1f", x)
+        )
+      )
+    ),
+    highlight = TRUE,
+    bordered = TRUE,
+    pagination = TRUE,
+    defaultPageSize = 15
   )
-
 })
 
 
