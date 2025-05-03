@@ -378,7 +378,8 @@ renderReactable({
     highlight = TRUE,
     bordered = TRUE,
     pagination = TRUE,
-    defaultPageSize = 15
+    showPageSizeOptions = TRUE,
+    pageSizeOptions = c(10, 25, 50, 100)
   )
 })
 ```
