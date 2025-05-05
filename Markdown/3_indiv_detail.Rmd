@@ -13,7 +13,7 @@ editor_options:
 
 # Competitor Skills & ToF
 
-## column {.sidebar}
+## column {.sidebar data-width=220}
 
 This dashboard displays the results skills and ToF for an individual Competitor. Use the provided filters to customise the data and update the view according to your preferences.
 
@@ -91,7 +91,7 @@ observeEvent(input$Competitor_1, {
 
 ```
 
-## column {data-width="400"}
+## column {data-width="700"}
 
 ```{r}
 
@@ -112,7 +112,8 @@ output$competitorLabel_detail <- renderText({
 ```
 
 
-### Skills & ToF (Seconds)
+### 
+Execution is calculated by adding the scorces from s1 - s10 and L then deducting the total from 20.  The Total ToF is calculated by adding all the t scores from s1-s10. 
 
 ```{r}
 
@@ -161,12 +162,12 @@ if (nrow(plot_data) > 0) {
         lineColor = "#008099",
         fillColor = NULL,
         lineWidth = 3,
-        width = 120,
+        width = 100,
         height = 30,
         chartRangeMin = min(clean_vals, na.rm = TRUE),
         chartRangeMax = max(clean_vals, na.rm = TRUE),
         spotColor = TRUE,
-        spotRadius = 15,
+        spotRadius = 5,
         minSpotColor = FALSE,
         maxSpotColor = TRUE
       )
@@ -206,7 +207,7 @@ if (nrow(plot_data) > 0) {
     T = colDef(
       name = "Total ToF",
       format = colFormat(digits = 3),
-      width = 100,  # Narrower width (was 80 in previous version)
+      width = 90  # Narrower width (was 80 in previous version)
     )
   )
   
@@ -218,11 +219,11 @@ if (nrow(plot_data) > 0) {
           background = get_teal_color(value),
           color = ifelse(is.na(value), "black", ifelse(value > 5, "white", "black")),
           textAlign = "center",
-          fontWeight = "bold"
+          fontWeight = "normal"
         )
       },
       format = colFormat(digits = 0),  # No decimals for s1-s10
-      width = 60,  # Narrow width for score columns
+      width = 43,  # Narrow width for score columns
     )
   }
   
@@ -233,11 +234,11 @@ if (nrow(plot_data) > 0) {
         background = get_teal_color(value),
         color = ifelse(is.na(value), "black", ifelse(value > 5, "white", "black")),
         textAlign = "center",
-        fontWeight = "bold"
+        fontWeight = "normal"
       )
     },
     format = colFormat(digits = 0),
-    width = 60,  # Narrow width for score columns
+    width = 43,  # Narrow width for score columns
   )
   
     # Hide t1-t10 columns
@@ -248,12 +249,14 @@ if (nrow(plot_data) > 0) {
   # Render table
   reactable(
     plot_data,
+    height = 650,
     columns = column_defs,
     defaultColDef = colDef(
-      headerStyle = list(background = "#f7f7f7"),
+      headerStyle = list(background = "#f7f7f7", fontWeight = "normal"),
       align = "left"
     ),
     highlight = TRUE,
+    defaultPageSize = 8,
     bordered = TRUE,
     pagination = TRUE,
     showPageSizeOptions = TRUE,

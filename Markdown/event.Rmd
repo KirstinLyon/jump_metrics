@@ -12,7 +12,7 @@ editor_options:
 # Event Overview
 
 
-## column {.sidebar}
+## Column {.sidebar data-width=220}
 
 This dashboard displays the results for an individual event. Use the provided filters to customise the data and update the view according to your preferences.
 
@@ -92,7 +92,7 @@ observeEvent(input$Event, {
 
 ```
 
-## column {data-width="300"}
+## column {data-width="200"}
 ```{r}
 
 # Use a div with a specific height to create space
@@ -115,9 +115,7 @@ output$eventLabel <- renderText({
 
 ```{r}
 
-plotlyOutput("e_plot")
-
-output$e_plot <- renderPlotly({
+renderPlot({
   
   # Data filtering and processing
   df <- update_raw_data() |>
@@ -134,21 +132,16 @@ output$e_plot <- renderPlotly({
     mutate(Rank = as.numeric(factor(Rank)))
   
   # Create ggplot with text for tooltips
-  p <- ggplot(df, aes(x = Rank, y = Execution, color = Stage)) +
-    geom_jitter(aes(text = paste(Competitor,  "<br>Rank: ", Rank, "<br>Execution: ", Execution)), width = 0.1, height = 0) +
+  ggplot(df, aes(x = as.numeric(Rank), y = Execution, color = Stage)) +
+    geom_jitter(width = 0.2, height = 0, size = 3) +  # Adjust width and height for jitter effect
     theme_minimal() +
-    scale_x_continuous(breaks = NULL) +  # Remove x-axis ticks 
-    expand_limits(y = 0)
+    theme(legend.position = "top") +  # Move legend to top
+    theme(legend.justification = c("right", "top")) +  # Align legend to the top-right
+    scale_x_continuous(breaks = seq(1, max(as.numeric(df$Rank), na.rm = TRUE) + 0, by = 2)) +  # Set x-axis breaks
+    expand_limits(y = 0) +
+    labs(x = "Rank",
+         y = "Points") 
   
-  # Convert ggplot to Plotly and ensure hover tooltips are enabled
-  ggplotly(p, tooltip = "text") %>%
-    layout(
-      hovermode = "closest",  # Ensure hover tooltips work
-      dragmode = "zoom"       # Allow zooming and panning
-    ) %>%
-    config(
-      displayModeBar = FALSE  # Remove the mode bar (zoom, lasso, etc.)
-    )
 })
 ```
 
@@ -156,9 +149,7 @@ output$e_plot <- renderPlotly({
 
 ```{r}
 
-plotlyOutput("tof_plot")
-
-output$tof_plot <- renderPlotly({
+renderPlot({
   
   # Data filtering and processing
   df <- update_raw_data() |>
@@ -175,21 +166,16 @@ output$tof_plot <- renderPlotly({
     mutate(Rank = as.numeric(factor(Rank)))
   
   # Create ggplot with text for tooltips
-  p <- ggplot(df, aes(x = Rank, y = T, color = Stage)) +
-    geom_jitter(aes(text = paste(Competitor,  "<br>Rank: ", Rank, "<br>ToF: ", T)), width = 0.1, height = 0) +
+  ggplot(df, aes(x = as.numeric(Rank), y = T, color = Stage)) +
+    geom_jitter(width = 0.2, height = 0, size = 3) +  # Adjust width and height for jitter effect
     theme_minimal() +
-    scale_x_continuous(breaks = NULL) +  # Remove x-axis ticks 
-    expand_limits(y = 0)
+    theme(legend.position = "top") +  # Move legend to top
+    theme(legend.justification = c("right", "top")) +  # Align legend to the top-right
+    scale_x_continuous(breaks = seq(1, max(as.numeric(df$Rank), na.rm = TRUE) + 0, by = 2)) +  # Set x-axis breaks
+    expand_limits(y = 0) +
+    labs(x = "Rank",
+         y = "T (s)") 
   
-  # Convert ggplot to Plotly and ensure hover tooltips are enabled
-  ggplotly(p, tooltip = "text") %>%
-    layout(
-      hovermode = "closest",  # Ensure hover tooltips work
-      dragmode = "zoom"       # Allow zooming and panning
-    ) %>%
-    config(
-      displayModeBar = FALSE  # Remove the mode bar (zoom, lasso, etc.)
-    )
 })
 ```
 
@@ -197,9 +183,7 @@ output$tof_plot <- renderPlotly({
 ### Difficulty
 ```{r}
 
-plotlyOutput("dd_plot")
-
-output$dd_plot <- renderPlotly({
+renderPlot({
   
   # Data filtering and processing
   df <- update_raw_data() |>
@@ -216,21 +200,16 @@ output$dd_plot <- renderPlotly({
     mutate(Rank = as.numeric(factor(Rank)))
   
   # Create ggplot with text for tooltips
-  p <- ggplot(df, aes(x = Rank, y = D, color = Stage)) +
-    geom_jitter(aes(text = paste(Competitor,  "<br>Rank: ", Rank, "<br>DD: ", D)), width = 0.1, height = 0) +
+  ggplot(df, aes(x = as.numeric(Rank), y = D, color = Stage)) +
+    geom_jitter(width = 0.2, height = 0, size = 3) +  # Adjust width and height for jitter effect
     theme_minimal() +
-    scale_x_continuous(breaks = NULL) +  # Remove x-axis ticks 
-    expand_limits(y = 0)
+    theme(legend.position = "top") +  # Move legend to top
+    theme(legend.justification = c("right", "top")) +  # Align legend to the top-right
+    scale_x_continuous(breaks = seq(1, max(as.numeric(df$Rank), na.rm = TRUE) + 0, by = 2)) +  # Set x-axis breaks
+    expand_limits(y = 0) +
+    labs(x = "Rank",
+         y = "D") 
   
-  # Convert ggplot to Plotly and ensure hover tooltips are enabled
-  ggplotly(p, tooltip = "text") %>%
-    layout(
-      hovermode = "closest",  # Ensure hover tooltips work
-      dragmode = "zoom"       # Allow zooming and panning
-    ) %>%
-    config(
-      displayModeBar = FALSE  # Remove the mode bar (zoom, lasso, etc.)
-    )
 })
 ```
 
@@ -240,9 +219,7 @@ output$dd_plot <- renderPlotly({
 
 
 ```{r}
-plotlyOutput("hd_plot")
-
-output$hd_plot <- renderPlotly({
+renderPlot({
   
   # Data filtering and processing
   df <- update_raw_data() |>
@@ -259,21 +236,16 @@ output$hd_plot <- renderPlotly({
     mutate(Rank = as.numeric(factor(Rank)))
   
   # Create ggplot with text for tooltips
-  p <- ggplot(df, aes(x = Rank, y = H, color = Stage)) +
-    geom_jitter(aes(text = paste(Competitor,  "<br>Rank: ", Rank, "<br>HD: ", H)), width = 0.1, height = 0) +
+  ggplot(df, aes(x = as.numeric(Rank), y = H, color = Stage)) +
+    geom_jitter(width = 0.2, height = 0, size = 3) +  # Adjust width and height for jitter effect
     theme_minimal() +
-    scale_x_continuous(breaks = NULL) +  # Remove x-axis ticks 
-    expand_limits(y = 0)
+    theme(legend.position = "top") +  # Move legend to top
+    theme(legend.justification = c("right", "top")) +  # Align legend to the top-right
+    scale_x_continuous(breaks = seq(1, max(as.numeric(df$Rank), na.rm = TRUE) + 0, by = 2)) +  # Set x-axis breaks
+    expand_limits(y = 0) +
+    labs(x = "Rank",
+         y = "H") 
   
-  # Convert ggplot to Plotly and ensure hover tooltips are enabled
-  ggplotly(p, tooltip = "text") %>%
-    layout(
-      hovermode = "closest",  # Ensure hover tooltips work
-      dragmode = "zoom"       # Allow zooming and panning
-    ) %>%
-    config(
-      displayModeBar = FALSE  # Remove the mode bar (zoom, lasso, etc.)
-    )
 })
 
 ```
@@ -282,7 +254,7 @@ output$hd_plot <- renderPlotly({
 
 
 
-## Column {data-width="700"}
+## Column 
 
 ```{r}
 
@@ -303,6 +275,7 @@ output$competitionLabel <- renderText({
 ```
 
 ### 
+Mark is calculated by adding Execution, T, D and H.
 
 ```{r}
 renderReactable({
@@ -324,13 +297,28 @@ renderReactable({
   
   reactable(
     plot_data,
+    height = 650,
     defaultColDef = colDef(
-      headerStyle = list(background = "#f7f7f7"),
-      style = list(fontSize = "0.9em"),
+      headerStyle = list(background = "#f7f7f7", fontWeight = "normal"),
+      style = list(fontSize = "0.8em"),
       align = "left"
     ),
     columns = list(
+      
+      Rank = colDef(
+        width = 60
+      ),
+      Country = colDef(
+        width = 80
+      ),
+      
+       Mark = colDef(
+        width = 70,
+        format = colFormat(digits = 3)
+      ),
+      
       Execution = colDef(
+                 width = 70,
         cell = reactablefmtr::data_bars(
           data = plot_data,
           fill_color = "#e0e0e0",
@@ -342,33 +330,39 @@ renderReactable({
         )
       ),
       T = colDef(
+              width = 70,
         cell = reactablefmtr::data_bars(
           data = plot_data,
           fill_color = "#e0e0e0",
           background = "transparent",
           text_position = "inside-base",
+
           min_value = 0,
           max_value = 22,
           number_fmt = function(x) sprintf("%.1f", x)
         )
       ),
       H = colDef(
+               width = 70,
         cell = reactablefmtr::data_bars(
           data = plot_data,
           fill_color = "#e0e0e0",
           background = "transparent",
           text_position = "inside-base",
           min_value = 0,
+
           max_value = 22,
           number_fmt = function(x) sprintf("%.1f", x)
         )
       ),
       D = colDef(
+                  width = 70,
         cell = reactablefmtr::data_bars(
           data = plot_data,
           fill_color = "#e0e0e0",
           background = "transparent",
           text_position = "inside-base",
+
           min_value = 0,
           max_value = 22,
           number_fmt = function(x) sprintf("%.1f", x)
@@ -379,7 +373,7 @@ renderReactable({
     bordered = TRUE,
     pagination = TRUE,
     showPageSizeOptions = TRUE,
-    pageSizeOptions = c(10, 25, 50, 100)
+    pageSizeOptions = c(8, 16, 32, 100)
   )
 })
 ```
