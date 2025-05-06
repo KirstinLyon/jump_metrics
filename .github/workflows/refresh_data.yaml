@@ -24,7 +24,7 @@ jobs:
           R -e "install.packages(c('dplyr', 'readr', 'stringr', 'kickout'))"
 
       - name: Fetch and update data
-        run: Rscript fetch_data.R  # Script to fetch and update data
+        run: Rscript Scripts/fetch_data.R  # Script to fetch and update data
 
       - name: Commit and push changes
         env:
