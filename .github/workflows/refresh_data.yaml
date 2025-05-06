@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           R -e "install.packages(c('dplyr', 'readr', 'stringr', 'remotes'))"
-          R -e "remotes::install_github('username/kickout')" # Replace 'username/kickout' with the actual GitHub repository for kickout.
+          R -e "remotes::install_github('username/kickout')" # Replace 'kirstinlyon/kickout' with the actual GitHub repository for kickout.
 
       - name: Fetch and update data
         run: Rscript Scripts/fetch_data.R
