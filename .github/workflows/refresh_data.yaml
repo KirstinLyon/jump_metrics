@@ -21,8 +21,20 @@ jobs:
 
       - name: Install dependencies
         run: |
+          echo "Installing required packages..."
           R -e "install.packages(c('dplyr', 'readr', 'stringr', 'remotes'))"
-          R -e "remotes::install_github('kirstinlyon/kickout', ref = 'main',force = TRUE, verbose = TRUE)" # Specified branch and enabled verbose logging for debugging.
+          
+      - name: Debug: Ensure DESCRIPTION file is accessible
+        run: |
+          echo "Checking repository structure ..."
+          ls -R
+          echo "Fetching DESCRIPTION file ..."
+          fucrl -sL https://api.github.com/repos/kirstinlyon/kickout/contents/DESCRIPTION?ref=main
+     
+      - name: Install kickout package
+        run: |
+          echo "Installing kickout package from GitHub ..."
+          R -e "remotes::install_github('kirstinlyon/kickout', ref = 'main', verbose = TRUE, force = TRUE)"
 
       - name: Fetch and update data
         run: Rscript Scripts/fetch_data.R
