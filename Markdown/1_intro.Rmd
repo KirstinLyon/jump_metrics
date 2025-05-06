@@ -24,8 +24,6 @@ app is updated every Monday. The data coverage begins from 2023 onwards,
 providing a current and relevant overview of trampoline events and
 performances.
 
-The mark is created by adding the Execution, Difficulty, Time of Flight and Horizontal Displacement scores together.
-
 Events included in Data
 
 \- Dancup 1, 2 and 3

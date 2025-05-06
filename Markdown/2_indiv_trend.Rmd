@@ -10,7 +10,8 @@ editor_options:
 ---
 # Competitor Overview 
 
-## Column {.sidebar}
+## Column {.sidebar data-width=220}
+
 
 This dashboard displays the results for an individual competitor. Use the provided filters to customise the data and update the view according to your preferences.
 
@@ -184,7 +185,7 @@ renderPlot({
     expand_limits(y = 0)  # This one line forces y-axis to include 0
 })
 ```
-## Column 
+## Column {data-width="600"}
 
 ```{r}
 div(style = "height: 55px;")  # Adjust the height as needed
@@ -195,6 +196,7 @@ output$competitorLabel_1 <- renderText({
 })
 ```
 ###
+Mark is calculated by adding Execution, T, D and H.
 
 ```{r}
 renderReactable({
@@ -211,14 +213,25 @@ renderReactable({
   
   reactable(
     plot_data,
+    height = 650,
     defaultColDef = colDef(
-      headerStyle = list(background = "#f7f7f7"),
-      style = list(fontSize = "0.9em"),
+      headerStyle = list(background = "#f7f7f7", fontWeight = "normal"),
+      style = list(fontSize = "0.8em"),
       align = "left"
     ),
     columns = list(
+      Rank = colDef(
+        width = 60
+      ),
+      
+    Mark = colDef(
+      width = 80,
+      format = colFormat(digits = 3)
+    ),
+
+      
       Execution = colDef(
-        
+        width = 70,
         cell = reactablefmtr::data_bars(
           data = plot_data,
           fill_color = "#e0e0e0",
@@ -230,6 +243,7 @@ renderReactable({
         )
       ),
       T = colDef(
+        width = 70,
         cell = reactablefmtr::data_bars(
           data = plot_data,
           fill_color = "#e0e0e0",
@@ -241,6 +255,7 @@ renderReactable({
         )
       ),
       H = colDef(
+        width = 70,
         cell = reactablefmtr::data_bars(
           data = plot_data,
           fill_color = "#e0e0e0",
@@ -252,6 +267,7 @@ renderReactable({
         )
       ),
       D = colDef(
+        width = 70,
         cell = reactablefmtr::data_bars(
           data = plot_data,
           fill_color = "#e0e0e0",
