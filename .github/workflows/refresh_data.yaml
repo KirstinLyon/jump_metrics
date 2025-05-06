@@ -1,3 +1,13 @@
+name: Update Kickout Data
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Runs every Sunday at midnight UTC
+  workflow_dispatch:  # Allows manual triggering from GitHub UI
+
 jobs:
   update-data:
     runs-on: ubuntu-latest
@@ -17,7 +27,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          echo "Installing required packages..."
+          echo "Installing required R packages..."
           R -e "install.packages(c('dplyr', 'readr', 'stringr', 'remotes'))"
 
       - name: Install kickout package
