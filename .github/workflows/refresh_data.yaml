@@ -21,18 +21,36 @@ jobs:
 
       - name: Install dependencies
         run: |
+          echo "Installing required packages..."
           R -e "install.packages(c('dplyr', 'readr', 'stringr', 'remotes'))"
-          R -e "remotes::install_github('kirstinlyon/kickout', ref = 'main', verbose = TRUE)" # Specified branch and enabled verbose logging for debugging.
+
+      - name: Debug: Ensure DESCRIPTION file is accessible
+        run: |
+          echo "Checking repository structure..."
+          ls -R
+          echo "Fetching DESCRIPTION file..."
+          curl -sL https://api.github.com/repos/kirstinlyon/kickout/contents/DESCRIPTION?ref=main
+
+      - name: Install kickout package
+        run: |
+          echo "Installing kickout package from GitHub..."
+          R -e "remotes::install_github('kirstinlyon/kickout', ref = 'main', verbose = TRUE, force = TRUE)"
 
       - name: Fetch and update data
-        run: Rscript Scripts/fetch_data.R
+        run: |
+          echo "Running fetch_data.R script..."
+          Rscript Scripts/fetch_data.R
 
       - name: Commit and push changes
         env:
           KICKOUT_AUTOMATION_TOKEN: ${{ secrets.KICKOUT_AUTOMATION_TOKEN }}
         run: |
+          echo "Configuring Git..."
           git config --global user.email "kirstin@mltwelve.com"
           git config --global user.name "KirstinLyon"
+          echo "Adding updated files..."
           git add Dataout/*.csv
+          echo "Committing changes..."
           git commit -m "Update kickout data"
+          echo "Pushing changes to repository..."
           git push https://${{ secrets.KICKOUT_AUTOMATION_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
