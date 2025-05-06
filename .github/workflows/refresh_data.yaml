@@ -7,11 +7,6 @@ on:
   schedule:
     - cron: '0 0 * * 0'  # Runs every Sunday at midnight UTC
   workflow_dispatch:  # Allows manual triggering from GitHub UI
-  
-  push:
-    branches:
-      - main  # Trigger on push to the main branch
-
 
 jobs:
   update-data:
@@ -26,7 +21,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        R -e "install.packages(c('dplyr', 'readr', 'stringr', 'kickout'))"
+          R -e "install.packages(c('dplyr', 'readr', 'stringr', 'kickout'))"
 
       - name: Fetch and update data
         run: Rscript fetch_data.R  # Script to fetch and update data
