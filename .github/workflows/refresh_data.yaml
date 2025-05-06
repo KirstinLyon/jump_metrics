@@ -24,9 +24,9 @@ jobs:
           echo "Installing required packages..."
           R -e "install.packages(c('dplyr', 'readr', 'stringr', 'remotes'))"
           
- #     - name: Debug: Ensure DESCRIPTION file is accessible
-#        run: |
-#          echo "Checking repository structure ..."
+      - name: Debug: Ensure DESCRIPTION file is accessible
+        run: |
+          echo "Checking repository structure ..."
 #          ls -R
 #          echo "Fetching DESCRIPTION file ..."
 #          curl -sL https://api.github.com/repos/kirstinlyon/kickout/contents/DESCRIPTION?ref=main
