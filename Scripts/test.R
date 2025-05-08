@@ -34,3 +34,4 @@ name_club_country <- events |>
 
 # Update any inconsistencies for clubs, countries and names in trampoline stored data
 # rerun fetch_data script and push data to GitHub
+
