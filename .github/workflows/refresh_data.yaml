@@ -71,4 +71,4 @@ jobs:
           git config --global user.name "KirstinLyon"
           git add Dataout/*.csv
           git diff --cached --quiet || git commit -m "Update kickout data [$(date +'%Y-%m-%d')]"
-          git push https://${{ secrets.KICKOUT_AUTOMATION_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+          git push https://${{ secrets.KICKOUT_AUTOMATION_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main -f
