@@ -30,7 +30,18 @@ jobs:
       - name: Install dependencies
         run: |
           echo "Installing required R packages..."
-          R -e "install.packages(c('dplyr', 'readr'))"
+          R -e "install.packages(c('dplyr', 'readr', 'stringr', 'remotes'))"
+
+      - name: Install kickout package
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Installing kickout package from GitHub..."
+          R -e "remotes::install_github('kirstinlyon/kickout', 
+                                        ref = 'main', 
+                                        auth_token = '$GITHUB_PAT', 
+                                        force = TRUE, 
+                                        verbose = TRUE)"
 
 
       - name: Purge existing data
