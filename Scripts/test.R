@@ -4,7 +4,7 @@ library(readr)
 
 events <-  read_csv("https://raw.githubusercontent.com/KirstinLyon/jump_metrics/refs/heads/main/Dataout/all_events.csv")
 
-
+events_local <- read_csv("Dataout/all_events.csv")
 
 # CHECKS
 # 1.  look at DEN - any missing clubs?  or inconcistent spelling?

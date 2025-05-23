@@ -1,4 +1,4 @@
-name: Update Kickout Data
+name: Update starwars Data
 
 permissions:
   contents: write
@@ -50,7 +50,7 @@ jobs:
 
       - name: Fetch and update data
         run: |
-          Rscript Scripts/fetch_data.R
+          Rscript Scripts/star_wars_refresh_data.R
           echo "Checking line count:"
           wc -l Dataout/*.csv
 
@@ -68,5 +68,5 @@ jobs:
           git config --global user.email "kirstin@mltwelve.com"
           git config --global user.name "KirstinLyon"
           git add Dataout/*.csv
-          git diff --cached --quiet || git commit -m "Update kickout data [$(date +'%Y-%m-%d')]"
+          git diff --cached --quiet || git commit -m "Update starwars data [$(date +'%Y-%m-%d')]"
           git push https://${{ secrets.KICKOUT_AUTOMATION_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main -f
