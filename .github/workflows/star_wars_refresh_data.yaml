@@ -30,18 +30,8 @@ jobs:
       - name: Install dependencies
         run: |
           echo "Installing required R packages..."
-          R -e "install.packages(c('dplyr', 'readr', 'stringr', 'remotes'))"
+          R -e "install.packages(c('dplyr', 'readr'))"
 
-      - name: Install kickout package
-        env:
-          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Installing kickout package from GitHub..."
-          R -e "remotes::install_github('kirstinlyon/kickout', 
-                                        ref = 'main', 
-                                        auth_token = '$GITHUB_PAT', 
-                                        force = TRUE, 
-                                        verbose = TRUE)"
 
       - name: Purge existing data
         run: |
@@ -50,7 +40,7 @@ jobs:
 
       - name: Fetch and update data
         run: |
-          Rscript Scripts/star_wars_refresh_data.R
+          Rscript Scripts/star_wars_test.R
           echo "Checking line count:"
           wc -l Dataout/*.csv
 
