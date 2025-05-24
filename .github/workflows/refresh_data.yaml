@@ -43,11 +43,35 @@ jobs:
                                         force = TRUE, 
                                         verbose = TRUE)"
 
-      - name: Purge existing data
+      - name: Debug Dataout Purge and Git State
         run: |
+          echo "====== BEFORE PURGE ======"
+          ls -la Dataout/ || echo "Dataout does not exist"
+          git status
+      
+          echo "====== PURGE LOCAL FILES ======"
           rm -rf Dataout
           mkdir -p Dataout
           ls -la Dataout/
+          git status
+      
+          echo "====== GIT RM TRACKED FILES ======"
+          git rm -rf Dataout/* || echo "No tracked files to remove"
+          git status
+      
+          echo "====== AFTER R SCRIPT (should contain new files only) ======"
+          # Run your R script here
+          Rscript Scripts/fetch_data.R
+          ls -la Dataout/
+          git status
+      
+          echo "====== GIT ADD NEW FILES ======"
+          git add Dataout/*.csv || echo "No new CSVs to add"
+          git status
+      
+          echo "====== GIT COMMIT AND PUSH ======"
+          git commit -m "Update kickout data [$(date +'%Y-%m-%d')]" || echo "No changes to commit"
+          # git push ... # (push command as per your secrets/config)
 
       - name: Fetch and update data
         run: |
