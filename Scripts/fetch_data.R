@@ -223,7 +223,8 @@ events <- purrr::map(event_list$event_id, ~ kickout::fetch_event_url(.x, event_l
     select(event_uuid, Date, Event_Year, Event,   Discipline, Competition, Competitor, Birth_Year, Club, Country, Stage,
            Rank, Total, Mark, Elements, Execution, T, H, D, everything()) |> 
     arrange(desc(Date), Discipline, Competition, group_number, performance_number, Competitor) |> 
-    select(-c(group_number, performance_number))
+    select(-c(group_number, performance_number)) |> 
+    distinct()
 
 write_csv(events,"Dataout/all_events_test.csv")
 

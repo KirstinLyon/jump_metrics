@@ -45,8 +45,9 @@ jobs:
 
       - name: Purge existing data
         run: |
-          rm -rf Dataout/* || true
+          rm -rf Dataout
           mkdir -p Dataout
+          ls -la Dataout/
 
       - name: Fetch and update data
         run: |
