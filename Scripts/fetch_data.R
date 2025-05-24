@@ -225,6 +225,6 @@ events <- purrr::map(event_list$event_id, ~ kickout::fetch_event_url(.x, event_l
     arrange(desc(Date), Discipline, Competition, group_number, performance_number, Competitor) |> 
     select(-c(group_number, performance_number))
 
-write_csv(events,"Dataout/all_events.csv")
+write_csv(events,"Dataout/all_events_test.csv")
 
 
