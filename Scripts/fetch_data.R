@@ -161,7 +161,7 @@ clean_representing_col <- function(representing, title, col) {
 
 # Fetch list of competitions
 event_list <- kickout::fetch_past_event_list() |> 
-    process_event_list("Trampoline") |> 
+    kickout::process_event_list("Trampoline") |> 
     
     #Use base R to filter dates - avoid calling the lubridate library
     filter(as.integer(format(begin_date, "%Y")) >= START_YEAR,
@@ -227,5 +227,4 @@ events <- purrr::map(event_list$event_id, ~ kickout::fetch_event_url(.x, event_l
     distinct()
 
 write_csv(events,"Dataout/all_events_test.csv")
-
-
+write_csv(events,"Dataout/all_events.csv")
