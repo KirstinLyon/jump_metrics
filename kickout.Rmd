@@ -75,8 +75,6 @@ update_score_data <- reactive({
  
 ```
 
-
-
 ```{r child1, child='Markdown/1_intro.Rmd', eval = TRUE}
 ```
 
@@ -91,4 +89,3 @@ update_score_data <- reactive({
 
 ```{r child5, child='Markdown/raw_data.Rmd', eval = TRUE}
 ```
-
