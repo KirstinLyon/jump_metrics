@@ -5,8 +5,9 @@ account: kirstinlyon
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 14603015
-bundleId: 10307272
+bundleId: 12706655
 url: https://kirstinlyon.shinyapps.io/kickout/
 version: 1
-asMultiple: FALSE
+asMultiple: TRUE
 asStatic: FALSE
+ignoredFiles: Dataout/all_events.csv|CopyOfkickout.Rmd|test.Rmd

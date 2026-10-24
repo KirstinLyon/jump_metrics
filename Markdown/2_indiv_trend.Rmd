@@ -119,8 +119,8 @@ renderPlot({
     scale_color_hue(direction = 1) +
     labs( y = "Execution") +
     theme_minimal() +
-    theme(legend.position = "top", legend.justification = "right") +
-    expand_limits(y = 0)  # This one line forces y-axis to include 0
+    theme(legend.position = "top", legend.justification = "right") #+
+    #expand_limits(y = 0)  # This one line forces y-axis to include 0
 })
 ```
 
@@ -139,8 +139,8 @@ renderPlot({
     scale_color_hue(direction = 1) +
     labs(y = "Time of Flight (S)") +
     theme_minimal() +
-    theme(legend.position = "top", legend.justification = "right")+
-    expand_limits(y = 0)  # This one line forces y-axis to include 0
+    theme(legend.position = "top", legend.justification = "right")#+
+    #expand_limits(y = 0)  # This one line forces y-axis to include 0
 })
 ```
 
@@ -160,8 +160,8 @@ renderPlot({
     scale_color_hue(direction = 1) +
     labs( y = "Difficulty") +
     theme_minimal() +
-    theme(legend.position = "top", legend.justification = "right") +
-    expand_limits(y = 0)  # This one line forces y-axis to include 0
+    theme(legend.position = "top", legend.justification = "right") #+
+    #expand_limits(y = 0)  # This one line forces y-axis to include 0
 })
 ```
 
@@ -181,8 +181,8 @@ renderPlot({
     scale_color_hue(direction = 1) +
     labs(y = "Horizontal Displacement") +
     theme_minimal() +
-    theme(legend.position = "top", legend.justification = "right")+
-    expand_limits(y = 0)  # This one line forces y-axis to include 0
+    theme(legend.position = "top", legend.justification = "right")#+
+    #expand_limits(y = 0)  # This one line forces y-axis to include 0
 })
 ```
 ## Column {data-width="600"}

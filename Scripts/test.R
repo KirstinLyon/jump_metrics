@@ -2,7 +2,7 @@
 library(dplyr)
 library(readr)
 
-events <-  read_csv("https://raw.githubusercontent.com/KirstinLyon/jump_metrics/refs/heads/main/Dataout/all_events.csv")
+events_test <-  read_csv("https://raw.githubusercontent.com/KirstinLyon/jump_metrics/refs/heads/main/Dataout/all_events.csv")
 
 events_local <- read_csv("Dataout/all_events.csv")
 
@@ -38,3 +38,7 @@ name_club_country <- events |>
 
 library(esquisse)
 esquisse::esquisser(events_local)
+
+
+events_acro_companion <- read_csv("Dataout/acro_companion.csv")
+
