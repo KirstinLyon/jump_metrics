@@ -2,10 +2,10 @@
 title:  "Kickout"
 output:
   flexdashboard::flex_dashboard:
-    navbar:
-    - title:  "Me"
-      href:  "https://mltwelve.com/"
-      icon:  "fa-home"
+    #navbar:
+    #- title:  "Me"
+    #  href:  "https://mltwelve.com/"
+    #  icon:  "fa-home"
     theme:  yeti
 runtime:  shiny
 editor_options:
